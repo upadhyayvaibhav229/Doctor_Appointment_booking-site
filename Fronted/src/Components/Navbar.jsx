@@ -34,6 +34,7 @@ const Navbar = () => {
         token ? <div className="flex items-center gap-2 cursor-pointer group relative">
           <img className="w-8 rounded-full" src={profile} alt="profile"></img>
           <img className="w-2.5" src= {dropdown_icon} alt="dropdown"></img>
+          
           <div className="absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-50  hidden group-hover:block">
             <div className="flex flex-col bg-stone-100 p-4 gap-4 min-w-48">
               <p onClick={() => navigate("/my-Profile")} className="hover:text-black cursor-pointer">My Profile</p>

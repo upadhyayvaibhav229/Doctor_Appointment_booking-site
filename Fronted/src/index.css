@@ -5,3 +5,12 @@
 .active hr{
     @apply block
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* scrollbehavior: smooth */
+html {
+    scroll-behavior: smooth;
+}
