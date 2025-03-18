@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { doctors } from "../assets/assets/assets";
 import { Link, useNavigate } from "react-router-dom";
+import Banner from "./Banner";
 
 const TopDoctors = () => {
 
@@ -38,7 +39,7 @@ const TopDoctors = () => {
         ))}
       </div>
 
-      <div className="mt-10">
+      <div className="mt-5">
         {
           isExpanded < doctors.length ? (
             <svg onClick={showmore} className="size-6 text-violet-500 cursor-pointer animate-bounce" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>) : (
@@ -54,7 +55,8 @@ const TopDoctors = () => {
            
         }
       </div>
-
+      
+        <Banner />
     </div>
   );
 };
