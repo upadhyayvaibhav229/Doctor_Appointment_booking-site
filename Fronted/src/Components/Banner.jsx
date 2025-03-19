@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const Banner = () => {
     const navigate = useNavigate();
   return (
-    <div className="flex flex-col md:flex-row bg-primary rounded-lg px-6 md:px-10 lg:px-20 mt-10 ">
+    <div className="flex flex-col md:flex-row bg-primary rounded-lg px-6 md:px-10 lg:px-20 mt-10 w-full ">
       {/* Left Side */}
       <div className="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left justify-center gap-6 md:py-[10vw]">
         <p className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white leading-tight">
