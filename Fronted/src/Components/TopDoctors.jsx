@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { doctors } from "../assets/assets/assets";
 import { Link, useNavigate } from "react-router-dom";
 import Banner from "./Banner";
+import { AppContext } from "../context/AppContext";
 
 const TopDoctors = () => {
 
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(10);
+  const {doctors}  = useContext(AppContext);
 
   function showmore() {
     setIsExpanded((prev) => prev + 6);
