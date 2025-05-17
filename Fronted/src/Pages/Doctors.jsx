@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 
+
 const Doctors = () => {
-  const { specaility } = useParams()
+  const { speciality } = useParams()
   // console.log(specaility);
   
   const navigate = useNavigate()
@@ -12,7 +13,7 @@ const Doctors = () => {
   const [filterDocs, setFilterDocs] = useState([])
 
   const specialities = [
-    "General Physican",
+    "General physician",
     "Gynecologist",
     "Dermatologist",
     "Pediatricians",
@@ -21,16 +22,18 @@ const Doctors = () => {
   ]
 
   const applyFilter = () => {
-    if (specaility) {
-      setFilterDocs(doctors.filter(doc => doc.specaility === specaility))
+    if (speciality) {
+      setFilterDocs(doctors.filter(doc => doc.speciality === speciality))
     } else {
       setFilterDocs(doctors)
+      console.log(doctors);
+      
     }
   }
 
   useEffect(() => {
     applyFilter()
-  }, [doctors, specaility])
+  }, [doctors, speciality])
 
   return (
     <div className=''>
@@ -44,7 +47,7 @@ const Doctors = () => {
               key={index}
               onClick={() => navigate(`/doctors/${item}`)}
               className={`w-[20vw] border border-blue-300 text-md rounded px-2 py-2 cursor-pointer hover:bg-blue-100 ${
-                specaility === item ? "bg-blue-200 font-semibold" : ""
+                speciality === item ? "bg-blue-200 font-semibold" : ""
               }`}
             >
               {item}
@@ -67,7 +70,7 @@ const Doctors = () => {
                   <p className="text-sm text-green-500">Available</p>
                 </div>
                 <p className="text-xl font-semibold">{item.name}</p>
-                <p className="text-sm font-semibold">{item.specaility}</p>
+                <p className="text-sm font-semibold">{item.speciality}</p>
               </div>
             </div>
           ))}
