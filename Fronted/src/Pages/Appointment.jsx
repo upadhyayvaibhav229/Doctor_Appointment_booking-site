@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context/AppContext';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { assets } from '../assets/assets/assets';
 
 const Appointment = () => {
   const { id } = useParams();
-  console.log("id", id);
+  // console.log("id", id);
 
   const { doctors } = useContext(AppContext);
-  console.log(doctors);
+  // console.log(doctors);
 
 
   const [docInfo, setDocInfo] = useState(null);
@@ -16,9 +16,10 @@ const Appointment = () => {
   const [slotIndex, setSlotIndex] = useState([]);
   const [slotTime, setSlotTime] = useState("");
 
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = doctors.find((item) => item._id === id);
-    console.log(fetchData);
+    // console.log(fetchData);
 
     if (fetchData) {
       setDocInfo(fetchData);
@@ -27,6 +28,10 @@ const Appointment = () => {
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id, doctors]);
+
+  useEffect(()=>{getAvailabeSlots()},[docInfo])
+  useEffect(()=>{console.log("Slots", docslots);
+  },[docslots])
 
   const getAvailabeSlots = async () => {
     setDocSlots([]);
@@ -47,9 +52,25 @@ const Appointment = () => {
       if (today.getDate() === currentDate.getDate()) {
         currentDate.setHours(currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10)
         currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0)
-      }else {
-        
+      } else {
+        currentDate.setHours(10)
+        currentDate.setMinutes(0)
       }
+      let tiemSlots = []
+
+      while (currentDate < endTime) {
+        let formatedTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+        // add slot to array
+        tiemSlots.push({
+          datetime: new Date(currentDate),
+          time: formatedTime
+        })
+
+        // increment current time by 30 min
+        currentDate.setMinutes(currentDate.getMinutes() + 30)
+      };
+      setDocSlots(prev => ([...prev, tiemSlots]))
     }
   }
 
@@ -61,7 +82,7 @@ const Appointment = () => {
           <>
 
             <div className='flex items-center justify-around'>
-              <img src={docInfo.image} class="bg-primary w-full sm:max-w-72 rounded-lg" alt={docInfo.name} />
+              <img src={docInfo.image} className="bg-primary w-full sm:max-w-72 rounded-lg" alt={docInfo.name} />
             </div>
 
             <div className="flex-1 border border-[#ADADAD] rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0 space-y-2">
@@ -93,19 +114,8 @@ const Appointment = () => {
       <div className="">
         <h1 className='text-3xl font-bold mt-10'>Book an appointment</h1>
         <p className='text-[#4B5563]'>Select a date and time for your appointment.</p>
-        <div className="flex flex-col sm:flex-row gap-3 mt-5">
-          <div className="flex-1 border border-[#ADADAD] rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0 space-y-2">
-            <h1 className='text-xl font-bold'>Select Date</h1>
-            <input type="date" className='border border-[#ADADAD] rounded-lg p-2 w-full' />
-          </div>
-          <div className="flex-1 border border-[#ADADAD] rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0 space-y-2">
-            <h1 className='text-xl font-bold'>Select Time</h1>
-            <input type="time" className='border border-[#ADADAD] rounded-lg p-2 w-full' />
-          </div>
 
-        </div>
-
-        <button className='bg-primary cursor-pointer w- px-5 mt-4 py-2 rounded-full text-white font-bold'>Book an Appointment</button>
+        <button onClick={() => navigate('/my-appointments')} className='bg-primary cursor-pointer w- px-5 mt-4 py-2 rounded-full text-white font-bold'>Book an Appointment</button>
 
       </div>
     </>

@@ -26,7 +26,7 @@ const Doctors = () => {
       setFilterDocs(doctors.filter(doc => doc.speciality === speciality))
     } else {
       setFilterDocs(doctors)
-      console.log(doctors);
+      // console.log(doctors);
       
     }
   }
