@@ -130,12 +130,7 @@ const Appointment = () => {
           Select a date and time for your appointment.
         </p>
 
-        <button
-          onClick={() => navigate("/my-appointments")}
-          className="bg-primary cursor-pointer w- px-5 mt-4 py-2 rounded-full text-white font-bold"
-        >
-          Book an Appointment
-        </button>
+       
         <div
           onClick={() => setSlotIndex(index)}
           className="flex gap-3 items-center w-full overflow-x-scroll"
@@ -176,6 +171,7 @@ const Appointment = () => {
               </p>
             ))}
         </div>
+        <button onClick={()=> navigate(`/appointment/${id}/${slotTime}`)} className="bg-primary cursor-pointer w- px-5 mt-4 py-2 rounded-full text-white font-bold">Book an Appointment</button>
       </div>
       <RelatedDoctors docId={id} speciality={docInfo?.speciality} />
     </>
