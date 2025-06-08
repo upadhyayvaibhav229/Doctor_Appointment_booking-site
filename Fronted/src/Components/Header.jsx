@@ -71,7 +71,7 @@ const Header = () => {
         className="md:w-1/2 relative"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
       >
         <img
           className="w-full h-auto rounded-md md:absolute bottom-0"

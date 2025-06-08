@@ -9,7 +9,7 @@ const containerVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.4,
       ease: "easeOut",
       when: "beforeChildren",
       staggerChildren: 0.2,
@@ -17,10 +17,11 @@ const containerVariants = {
   },
 };
 
-const itemVariants = { 
+const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 };
+
 
 const SpecalityMenu = () => {
   return (

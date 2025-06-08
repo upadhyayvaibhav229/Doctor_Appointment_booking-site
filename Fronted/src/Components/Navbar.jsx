@@ -4,10 +4,11 @@ import profile from "../assets/assets/profile_pic.png";
 import dropdown_icon from "../assets/assets/dropdown_icon.svg";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { assets } from "../assets/assets/assets";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [showMany, setShowMany] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [token, setToken] = useState(true);
 
   return (
@@ -80,12 +81,49 @@ const Navbar = () => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/login")}
-            className="bg-primary text-white py-3 px-8 rounded-full font-bold text-md"
+            className="bg-primary text-white py-3 px-8 rounded-full font-bold text-md hidden md:block"
           >
             Create account
           </motion.button>
         )}
+
+          <div className="relative">
+      {/* Hamburger Menu Icon */}
+      <img
+        onClick={() => setShowMenu(true)}
+        className="w-6 md:hidden cursor-pointer"
+        src={assets.menu_icon}
+        alt="menu"
+      />
+
+      {/* Mobile Sidebar Menu */}
+      <div
+        className={`${showMenu ? 'fixed right-0 top-0 bottom-0 w-full' : 'w-0 h-0 overflow-hidden'} 
+        bg-white z-50 transition-all md:hidden`}
+      >
+        {/* Header: Logo & Close */}
+        <div className="flex justify-between items-center p-4 border-b">
+          <img src={assets.logo} alt="logo" className="w-24" />
+          <img
+            onClick={() => setShowMenu(false)}
+            src={assets.cross_icon}
+            alt="close"
+            className="w-6 cursor-pointer"
+          />
+        </div>
+
+        {/* Menu Items */}
+        <ul className="flex flex-col items-center p-6 gap-4 text-lg">
+          <NavLink  to="/" onClick={() => setShowMenu(false)}> <p className='px-4 py-2 rouded inline-block'>HOME</p></NavLink>
+          <NavLink  to="/doctors" onClick={() => setShowMenu(false)}><p className='px-4 py-2 rouded inline-block'>ALL DOCTORS</p></NavLink>
+          <NavLink to="/about" onClick={() => setShowMenu(false)}><p className='px-4 py-2 rouded inline-block'>ABOUT</p></NavLink>
+          <NavLink to="/contact" onClick={() => setShowMenu(false)}><p className='px-4 py-2 rouded inline-block'>CONTACT</p></NavLink>
+        </ul>
       </div>
+    </div>
+
+      </div>
+
     </motion.div>
   );
 };

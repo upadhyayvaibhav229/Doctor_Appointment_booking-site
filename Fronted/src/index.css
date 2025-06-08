@@ -14,3 +14,9 @@
 html {
     scroll-behavior: smooth;
 }
+
+@media(max-width: 742px) {
+    .active p{
+        @apply text-white bg-primary
+    }
+}

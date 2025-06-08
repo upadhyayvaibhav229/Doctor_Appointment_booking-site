@@ -1,94 +1,92 @@
 import React from "react";
 import { assets } from "../assets/assets/assets";
+import { motion } from "framer-motion";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
 
 const About = () => {
   return (
-    <>
-      <div className="container mx-auto my-10">
-        <div className="text-center text-2xl text-[#707070]">
+    <motion.div
+      className="container mx-auto px-4 my-10"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+    >
+      {/* Heading */}
+      <motion.div className="text-center text-2xl text-[#707070]" variants={fadeUp}>
+        <p>
+          About <span className="text-gray-700 font-semibold">Us</span>
+        </p>
+      </motion.div>
+
+      {/* Image & Text Section */}
+      <motion.div
+        className="my-10 flex flex-col md:flex-row items-center gap-8"
+        variants={fadeUp}
+      >
+        <img
+          src={assets.about_image}
+          className="w-full max-w-[360px]"
+          alt="about"
+        />
+
+        <div className="flex flex-col justify-center gap-6 text-sm text-gray-600 md:w-2/4">
           <p>
-            About <span className="text-gray-700 font-semibold">Us</span>
+            Welcome to Prescripto, your trusted partner in managing your
+            healthcare needs conveniently and efficiently.
+          </p>
+          <p>
+            Prescripto is committed to excellence in healthcare technology. We
+            continuously strive to enhance our platform.
+          </p>
+
+          <b className="text-base">Our Vision</b>
+          <p>
+            Our vision is to revolutionize the healthcare industry by providing
+            a comprehensive platform that simplifies health management.
           </p>
         </div>
+      </motion.div>
 
-        <div className="my-10 flex justify-between">
-          <img
-            src={assets.about_image}
-            className="w-full max-w-[360px]"
-            alt="about"
-          />
+      {/* Why Choose Us */}
+      <motion.div className="text-2xl my-4 text-center" variants={fadeUp}>
+        <p>
+          Why <span className="text-gray-700 font-semibold">Choose Us</span>
+        </p>
+      </motion.div>
 
-          <div className="flex flex-col justify-center gap-6 md:w-2/4 text-sm text-gray-600">
-            <p className="">
-              Welcome to Prescripto, your trusted partner in managing your
-              healthcare needs conveniently and efficiently. At Prescripto, we
-              understand the challenges individuals face when it comes to
-              scheduling doctor appointments and managing their health records.
-            </p>
-            <p>
-              Prescripto is committed to excellence in healthcare technology. We
-              continuously strive to enhance our platform, integrating the
-              latest advancements to improve user experience and deliver
-              superior service. Whether you're booking your first appointment or
-              managing ongoing care, Prescripto is here to support you every
-              step of the way.
-            </p>
-
-            <b>Our Vision</b>
-            <p>
-              Our vision is to revolutionize the healthcare industry by
-              providing a comprehensive platform that simplifies the process of
-              managing your health. We aim to empower individuals to take
-              control of their well-being and make informed decisions about
-              their healthcare needs.
-            </p>
-          </div>
-        </div>
-
-        <div className="text-2xl my-4">
-          <p>
-            Why <span className="text-gray-700 font-semibold">Choose Us</span>
-          </p>
-        </div>
-        <div class="flex flex-col md:flex-row gap-1 mb-20">
-          <div
-            class="border px-10 md:px-16 py-10 sm:py-16 flex flex-col gap-4 text-[15px] 
-                hover:bg-primary hover:text-white transition-all duration-300 
-                text-gray-600 cursor-pointer rounded-lg shadow-md hover:shadow-lg"
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+        {[
+          {
+            title: "EFFICIENCY:",
+            text: "Streamlined appointment scheduling that fits into your busy lifestyle.",
+          },
+          {
+            title: "CONVENIENCE:",
+            text: "Access to a network of trusted healthcare professionals in your area.",
+          },
+          {
+            title: "PERSONALIZATION:",
+            text: "Tailored recommendations and reminders to help you stay on top of your health.",
+          },
+        ].map((item, index) => (
+          <motion.div
+            key={index}
+            className="border px-8 py-10 flex flex-col gap-4 text-[15px] 
+              hover:bg-primary hover:text-white transition-all duration-300 
+              text-gray-600 cursor-pointer rounded-lg shadow-md hover:shadow-lg"
+            variants={fadeUp}
+            transition={{ duration: 0.4, delay: index * 0.2 }}
           >
-            <b class="text-lg">EFFICIENCY:</b>
-            <p>
-              Streamlined appointment scheduling that fits into your busy
-              lifestyle.
-            </p>
-          </div>
-
-          <div
-            class="border px-10 md:px-16 py-10 sm:py-16 flex flex-col gap-4 text-[15px] 
-                hover:bg-primary hover:text-white transition-all duration-300 
-                text-gray-600 cursor-pointer rounded-lg shadow-md hover:shadow-lg"
-          >
-            <b class="text-lg">CONVENIENCE:</b>
-            <p>
-              Access to a network of trusted healthcare professionals in your
-              area.
-            </p>
-          </div>
-
-          <div
-            class="border px-10 md:px-16 py-10 sm:py-16 flex flex-col gap-4 text-[15px] 
-                hover:bg-primary hover:text-white transition-all duration-300 
-                text-gray-600 cursor-pointer rounded-lg shadow-md hover:shadow-lg"
-          >
-            <b class="text-lg">PERSONALIZATION:</b>
-            <p>
-              Tailored recommendations and reminders to help you stay on top of
-              your health.
-            </p>
-          </div>
-        </div>
+            <b className="text-lg">{item.title}</b>
+            <p>{item.text}</p>
+          </motion.div>
+        ))}
       </div>
-    </>
+    </motion.div>
   );
 };
 
