@@ -1,16 +1,36 @@
 import React, { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
+import { motion } from 'framer-motion'
 
 const MyAppointments = () => {
   const {doctors} = useContext(AppContext)
-  return (
-    <div>
 
-      <h1 className='text-gray-600 font-medium border-b pb-2 mt-12 text-lg'>My Appointment</h1>
-    <div>
+  // animation
+   const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut",
+        when: "beforeChildren",
+        staggerChildren: 0.2,
+      },
+    },
+  }
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } },
+  }
+  return (
+    <motion.div variants={containerVariants} initial="hidden" animate="visible">
+
+      <motion.h1 variants={itemVariants} custom={0} className='text-gray-600 font-medium border-b pb-2 mt-12 text-lg'>My Appointment</motion.h1>
+    <motion.div variants={itemVariants} custom={1} className='mt-6'>
         {
           doctors.slice(0,2).map((item,index)=>(
-            <div className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-4 border-b">
+            <motion.div key={index} variants={itemVariants} custom={index}  className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-4 border-b">
 
             <div key={index}>
                 <img className='w-36 bg-[#EAEFFF]' src={item.image} alt={item.name}  />
@@ -28,11 +48,11 @@ const MyAppointments = () => {
               <button className='hover:bg-[#5F6FFF] hover:text-white py-2 sm:min-w-48 border rounded text-[#696969] transition-all duration-300' type="button">Pay Online</button>
               <button className='hover:bg-red-600 hover:text-white py-2 sm:min-w-48 border rounded text-[#696969] transition-all duration-300' type="button">Cancel Appointment</button>
             </div>
-            </div>
+            </motion.div>
           ))
         }
-    </div>
-    </div>
+    </motion.div>
+    </motion.div>
   )
 }
 

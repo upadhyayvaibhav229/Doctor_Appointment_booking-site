@@ -16,6 +16,7 @@ import upload_icon from './upload_icon.png'
 import stripe_logo from './stripe_logo.png'
 import razorpay_logo from './razorpay_logo.png'
 import doc1 from './doc1.png'
+import doc16 from './doc1.png'
 import doc2 from './doc2.png'
 import doc3 from './doc3.png'
 import doc4 from './doc4.png'
@@ -29,6 +30,7 @@ import doc11 from './doc11.png'
 import doc12 from './doc12.png'
 import doc13 from './doc13.png'
 import doc14 from './doc14.png'
+import doc17 from './doc14.png'
 import doc15 from './doc15.png'
 import Dermatologist from './Dermatologist.svg'
 import Gastroenterologist from './Gastroenterologist.svg'
@@ -295,4 +297,34 @@ export const doctors = [
             line2: 'Circle, Ring Road, London'
         }
     },
+    {
+        _id: 'doc16',
+        name: 'Dr. Lucas Scott',
+        image: doc16,
+        speciality: 'Gastroenterologist',
+        degree: 'MBBS',
+        experience: '4 Years',
+        about: 'Dr. Lucas Scott is known for his holistic approach to health, integrating traditional and modern medical practices to provide comprehensive care.',
+        fees: 50,
+        address: {
+            line1: '17th Cross, Richmond',
+            line2: 'Circle, Ring Road, London'
+        }
+    },
+
+    {
+        _id: 'doc17',
+        name: 'Dr. Olivia Turner',
+        image: doc17,
+        speciality: 'Gastroenterologist',
+        degree: 'MBBS',
+        experience: '4 Years',
+        about: 'Dr. Olivia Turner is dedicated to digestive health, offering personalized treatment plans and a compassionate approach to patient care.',
+        fees: 50,
+        address: {
+            line1: '17th Cross, Richmond',
+            line2: 'Circle, Ring Road, London'
+        }
+    }
+
 ];
