@@ -1,0 +1,5 @@
+PORT=5000
+MONGODB_URI = mongodb+srv://upadhyayvaibhav:vaibhav123@cluster0.xkyxwhc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+CLOUDINARY_CLOUD_NAME=dwaycoesr
+CLOUDINARY_API_KEY=145767923612935
+CLOUDINARY_API_SECRET=-6tr3RGUFTimSSQoE9O4kTMyZfo
