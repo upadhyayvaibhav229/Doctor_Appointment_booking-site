@@ -26,11 +26,11 @@ const Doctors = () => {
     } else {
       setFilterDocs(doctors)
     }
-  }
+  } 
 
   useEffect(() => {
     applyFilter()
-  }, [doctors, speciality])
+  }, [doctors, speciality]) 
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
