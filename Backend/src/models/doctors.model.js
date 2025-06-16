@@ -16,7 +16,7 @@ const DoctorSchema = new Schema({
         unique: true,
     },
     address: {
-        type: String,
+        type: Object,
         required: true,
     },
     image: {
@@ -32,7 +32,7 @@ const DoctorSchema = new Schema({
         required: true,
     },
     fees: {
-        type: String,
+        type: Number,
         required: true,
     },
     degree: {
@@ -40,12 +40,12 @@ const DoctorSchema = new Schema({
         required: true,
     },
     about: {
-        type: Boolean,
+        type: String,
         required: true,
     },
     availability: {
-        type: String,
-        required: true,
+        type: Boolean,
+        default: true, 
     },
     Date: {
         type: Date,
@@ -57,4 +57,11 @@ const DoctorSchema = new Schema({
     },
 }, {minimize: false});
 
+DoctorSchema.method.generateToken = function () {
+    return jwt.sign(
+        { _id: this._id, email: this.email },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: '1h' }
+    );
+}
 export const Doctor = mongoose.model('Doctor', DoctorSchema);
