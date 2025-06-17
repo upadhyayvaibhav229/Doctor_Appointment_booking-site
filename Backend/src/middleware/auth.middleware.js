@@ -1,29 +1,21 @@
-import { ApiError } from "../utils/ApiError.js";
-import { asyncHandler } from "../utils/asynchandler.js";
-import jwt from "jsonwebtoken"
-import { User } from "../models/user.model.js";
+import jwt from 'jsonwebtoken';
+import { asyncHandler } from '../utils/asynchandler.js';
 
-export const verifyJwt = asyncHandler(async (req, res, next) => {
-    try {
-        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+export const authAdmin = asyncHandler(async (req, res, next) => {
+  const token = req.cookies?.adminToken;
 
-        if (!token) {
-            req.user = null;  // ✅ Allow token-less requests (for logout)
-            return next();
-        }
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided, authorization denied' });
+  }
 
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-        if (!user) {
-            throw new ApiError(401, "Invalid Access Token");
-        }
+  if (decoded.email !== process.env.ADMIN_EMAIL) {
+    return res.status(403).json({ message: 'Forbidden: Invalid admin' });
+  }
 
-        req.user = user;
-        next();
-    } catch (error) {
-        req.user = null;  // ✅ Prevent breaking logout
-        next();
-    }
+  req.user = decoded;
+  next();
 });
-
+// This middleware checks if the request has a valid admin token.
+// If the token is valid and matches the admin email, it allows the request to proceed.

@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asynchandler.js";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // ✅ Use your utility here
-
+import jwt from "jsonwebtoken";
 const addDoctor = asyncHandler(async (req, res) => {
   const {
     name,
@@ -19,8 +19,8 @@ const addDoctor = asyncHandler(async (req, res) => {
 
   const imageFile = req.file;
 
-  console.log("Received data:", req.body);
-  console.log("Received file:", imageFile);
+  // console.log("Received data:", req.body);
+  // console.log("Received file:", imageFile);
 
   // ✅ Check all required fields
   if (
@@ -98,18 +98,30 @@ const addDoctor = asyncHandler(async (req, res) => {
   });
 });
 
-
 // admin login
 
 const adminLogin = asyncHandler(async (req, res) => {
-    const { email, Password } = req.body;
+  const { email, Password } = req.body;
 
-    if (email === process.env.ADMIN_EMAIL && Password === process.env.ADMIN_PASSWORD) {
-        return res.status(200).json({ message: "Admin login successful" });
-        
-    }
-    return res.status(401).json({ message: "Invalid admin credentials" });
-    
-})
+  if (
+    email === process.env.ADMIN_EMAIL &&
+    Password === process.env.ADMIN_PASSWORD
+  ) {
+    const token = jwt.sign(
+      { email: process.env.ADMIN_EMAIL },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "1h" }
+    );
 
-export { addDoctor };
+    res.cookie("adminToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Use true only in production with HTTPS
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000, // 1 hour
+    });
+    return res.status(200).json({ message: "Admin login successful" });
+  }
+  return res.status(401).json({ message: "Invalid admin credentials" });
+});
+
+export { addDoctor, adminLogin };

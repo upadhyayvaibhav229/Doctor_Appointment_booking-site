@@ -57,11 +57,6 @@ const DoctorSchema = new Schema({
     },
 }, {minimize: false});
 
-DoctorSchema.method.generateToken = function () {
-    return jwt.sign(
-        { _id: this._id, email: this.email },
-        process.env.JWT_SECRET_KEY,
-        { expiresIn: '1h' }
-    );
-}
+
+
 export const Doctor = mongoose.model('Doctor', DoctorSchema);
