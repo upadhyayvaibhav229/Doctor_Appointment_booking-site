@@ -101,11 +101,11 @@ const addDoctor = asyncHandler(async (req, res) => {
 // admin login
 
 const adminLogin = asyncHandler(async (req, res) => {
-  const { email, Password } = req.body;
+  const { email, password } = req.body;
 
   if (
     email === process.env.ADMIN_EMAIL &&
-    Password === process.env.ADMIN_PASSWORD
+    password === process.env.ADMIN_PASSWORD
   ) {
     const token = jwt.sign(
       { email: process.env.ADMIN_EMAIL },
@@ -115,13 +115,21 @@ const adminLogin = asyncHandler(async (req, res) => {
 
     res.cookie("adminToken", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use true only in production with HTTPS
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 1000, // 1 hour
+      maxAge: 60 * 60 * 1000,
     });
-    return res.status(200).json({ message: "Admin login successful" });
+
+    return res.status(200).json({
+      success: true,
+      message: "Admin login successful",
+      token, // optionally send token to frontend
+    });
   }
-  return res.status(401).json({ message: "Invalid admin credentials" });
+
+  return res
+    .status(401)
+    .json({ success: false, message: "Invalid admin credentials" });
 });
 
 export { addDoctor, adminLogin };
