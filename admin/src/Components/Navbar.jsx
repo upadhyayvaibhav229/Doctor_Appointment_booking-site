@@ -11,7 +11,7 @@ const Navbar = () => {
         window.location.reload();
     }
   return (
-    <div className="flex items-center justify-between text-sm py-4 p-2 mb-5 border-b border-b-gray-400">
+    <div className="flex items-center justify-between text-sm py-4 p-2 border-b border-b-gray-400">
     <div className="flex items-center gap-2">
       <img className="w-44 cursor-pointer" src={assets.logo} alt="logo" />
     <p className="text-[#5f6FFF] border rounded-full px-3 mt-3">Admin</p>
