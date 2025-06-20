@@ -6,7 +6,7 @@ import { assets } from "../assets/assets_admin/assets";
 const Sidebar = () => {
   const { adminToken } = useAdminContext();
   return (
-    <div className="min-h-screen bg-white border-r">
+    <div className="min-h-screen bg-white border-r md:w-72">
       {adminToken && (
         <ul className="flex flex-col items-start gap-3">
           <NavLink
@@ -16,9 +16,10 @@ const Sidebar = () => {
               } `
             }
             to="/admin-dashboard"
+            style={{ width: "100%" }}
           >
             <img src={assets.home_icon} alt="" />
-            <p>Dashboard</p>
+            <p className="hidden md:block">Dashboard</p>
           </NavLink>
           <NavLink
             className={({ isActive }) =>
@@ -27,9 +28,10 @@ const Sidebar = () => {
               } `
             }
             to="/all-appointments"
+            style={{ width: "100%" }}
           >
             <img src={assets.appointment_icon} alt="" />
-            <p>Appointments</p>
+            <p className="hidden md:block">Appointments</p>
           </NavLink>
           <NavLink
             className={({ isActive }) =>
@@ -38,9 +40,10 @@ const Sidebar = () => {
               } `
             }
             to="/addDoctor"
+            style={{ width: "100%" }}
           >
             <img src={assets.add_icon} alt="" />
-            <p>Add Doctor</p>
+            <p className="hidden md:block">Add Doctor</p>
           </NavLink>
           <NavLink
             className={({ isActive }) =>
@@ -49,9 +52,10 @@ const Sidebar = () => {
               } `
             }
             to="/doctors-list"
+            style={{ width: "100%" }}
           >
             <img src={assets.people_icon} alt="" />
-            <p>Doctor Lists</p>
+            <p className="hidden md:block">Doctor Lists</p>
           </NavLink>
         </ul>
       )}
@@ -60,3 +64,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
