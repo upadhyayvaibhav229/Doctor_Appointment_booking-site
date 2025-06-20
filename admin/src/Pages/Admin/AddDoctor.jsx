@@ -43,7 +43,6 @@ const AddDoctor = () => {
       formData.append("education", education);
       // formData.append("degree", degree);
       formData.append("about", about);
-
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
