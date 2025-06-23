@@ -28,7 +28,7 @@ const Login = () => {
           localStorage.setItem("adminToken", data.token);
 
           setTimeout(() => {
-            window.location.href = "/admin/dashboard";
+            window.location.href = "/";
           }, 1500); // wait for loader animation
         } else {
           setLoading(false);

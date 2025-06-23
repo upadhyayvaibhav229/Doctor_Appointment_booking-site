@@ -2,6 +2,7 @@ import React from "react";
 import { assets } from "../../assets/assets_admin/assets";
 import { useAdminContext } from "../../Contexts/AdminContext";
 import { toast } from "react-toastify";
+import axios from "axios";
 const AddDoctor = () => {
   const [docImg, setDocImg] = React.useState(null);
   const [name, setName] = React.useState("");
@@ -9,47 +10,72 @@ const AddDoctor = () => {
   const [password, setPassword] = React.useState("");
   const [experience, setExperience] = React.useState("1 Year");
   const [fees, setFees] = React.useState("");
-  const [specialization, setSpecialization] =
-    React.useState("General Physician");
+  const [specialization, setSpecialization] =React.useState("General Physician");
+  const [degree, setDegree] = React.useState("");
   const [address1, setAddress1] = React.useState("");
   const [address2, setAddress2] = React.useState("");
-  const [education, setEducation] = React.useState("");
-  const [degree, setDegree] = React.useState("");
+  // const [education, setEducation] = React.useState("");
+  
   const [about, setAbout] = React.useState("");
 
   const { adminToken, backendUrl } = useAdminContext();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    try {
-      if (!docImg) {
-        toast.error("Please upload a doctor image.");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("docImg", docImg);
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("password", password);
-      formData.append("experience", experience);
-      formData.append("fees", fees);
-      formData.append("specialization", specialization);
-      formData.append(
-        "address",
-        JSON.stringify({ line1: address1, line2: address2 })
-      );
-
-      formData.append("education", education);
-      // formData.append("degree", degree);
-      formData.append("about", about);
-      formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`);
-      });
-    } catch (error) {
-      // toast.error("Something went wrong, please try again later.");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    if (!docImg) {
+      toast.error("Please upload a doctor image.");
+      return;
     }
-  };
+
+    const formData = new FormData();
+    formData.append("docImg", docImg);
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("experience", experience);
+    formData.append("fees", fees);
+    formData.append("specialization", specialization);
+    formData.append(
+      "address",
+      JSON.stringify({ line1: address1, line2: address2 })
+    );
+    formData.append("degree", degree);
+    formData.append("about", about);
+
+    const { data } = await axios.post(
+      `${backendUrl}/api/admin/add-doctor`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${adminToken}`,
+        },
+      }
+    );
+
+    if (data.success || data.message === "Doctor added successfully") {
+      toast.success("Doctor added successfully");
+      // Reset form
+      setDocImg(null);
+      setName("");
+      setEmail("");
+      setPassword("");
+      setExperience("1 Year");
+      setFees("");
+      setSpecialization("General Physician");
+      setAddress1("");
+      setAddress2("");
+      setDegree("");
+      setAbout("");
+    } else {
+      toast.error(data.message || "Something went wrong.");
+    }
+  } catch (error) {
+    toast.error("Something went wrong, please try again later.");
+    console.log(error?.response?.data || error);
+  }
+};
 
   return (
     <div className="p-5 max-w-3xl mx-auto">
@@ -59,7 +85,10 @@ const AddDoctor = () => {
       >
         <h1 className="text-2xl font-bold text-center">Add Doctor</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 p-2">
-          <label htmlFor="doc-img" className="block text-gray-700 text-sm font-bold mb-2">
+          <label
+            htmlFor="doc-img"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
             <img
               src={docImg ? URL.createObjectURL(docImg) : assets.upload_area}
               className="w-16 h-16 rounded-full bg-gray-100 cursor-pointer object-cover border border-dashed border-gray-300"
@@ -147,21 +176,21 @@ const AddDoctor = () => {
                 value={specialization}
                 className="p-2 rounded border border-gray-300"
               >
-                <option value="cardiology">Cardiology</option>
-                <option value="neurology">Neurology</option>
+                <option value="cardiology">Cardiologist</option>
+                <option value="neurology">Neurologist</option>
                 <option value="orthopedics">Orthopedics</option>
-                <option value="pediatrics">Pediatrics</option>
-                <option value="dermatology">Dermatology</option>
-                <option value="gynecology">Gynecology</option>
-                <option value="general medicine">General Medicine</option>
+                <option value="pediatrics">Pediatricians</option>
+                <option value="dermatology">Dermatologist</option>
+                <option value="gynecology">Gynecologist</option>
+                <option value="general ">General Physician</option>
               </select>
             </div>
 
             <div className="flex flex-col gap-2">
               <p className="font-bold">Education</p>
               <input
-                onChange={(e) => setEducation(e.target.value)}
-                value={education}
+                onChange={(e) => setDegree(e.target.value)}
+                value={degree}
                 className="p-2 rounded border border-gray-300"
                 type="text"
                 placeholder="Your Education"
