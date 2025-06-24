@@ -37,12 +37,37 @@ const AdminProvider = ({ children }) => {
     }
   };
 
+  const changeAvailability = async (docId) => {
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/api/admin/change-availability/${docId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        getAllDoctors();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error("Axios error:", error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "Failed to change availability");
+    }
+  };
+
   const value = {
     adminToken,
     setAdminToken,
     backendUrl,
     getAllDoctors,
     doctors,
+    changeAvailability
   };
 
   return (

@@ -9,6 +9,6 @@ const Adminrouter = express.Router();
 Adminrouter.post('/add-doctor', authAdmin, upload.single('docImg'), addDoctor);
 Adminrouter.get('/all-doctors', authAdmin, allDoctor);
 Adminrouter.post('/login', adminLogin);
-Adminrouter.post('/change-availability', authAdmin, changeDoctorAvailability);
+Adminrouter.post('/change-availability/:docId', authAdmin, changeDoctorAvailability);
 
 export default Adminrouter;

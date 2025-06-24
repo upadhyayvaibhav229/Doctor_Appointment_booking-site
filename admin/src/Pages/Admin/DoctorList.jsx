@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAdminContext } from "../../Contexts/AdminContext";
 
 const DoctorList = () => {
-  const { doctors, getAllDoctors, adminToken } = useAdminContext();
+  const { doctors, getAllDoctors, adminToken,changeAvailability } = useAdminContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,13 +49,14 @@ const DoctorList = () => {
 
                 <label className="flex items-center gap-2 text-sm mt-3">
                   <input
+                  onChange={(e) => changeAvailability(item._id, e.target.checked)}
                     type="checkbox"
                     checked={item.availability}
-                    readOnly
+                    // readOnly
                     className="accent-indigo-600"
                   />
                   <span className={item.availability ? "text-green-600" : "text-red-500"}>
-                    {item.availability ? "Available" : "Unavailable"}
+                    {item.availability ? "Available" : "Not available"}
                   </span>
                 </label>
               </div>
