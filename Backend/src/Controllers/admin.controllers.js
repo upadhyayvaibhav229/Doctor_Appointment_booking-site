@@ -111,6 +111,7 @@ const allDoctor = asyncHandler(async (req, res) => {
   console.log(doctors);
   
   res.json({
+    success: true,
     message: "Doctors fetched successfully",
     doctors,
   });
