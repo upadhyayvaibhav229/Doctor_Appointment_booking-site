@@ -22,6 +22,16 @@ const changeDoctorAvailability = asyncHandler(async (req, res) => {
 });
 
 
+const doctorList = asyncHandler(async (req, res) => {
+  const doctors = await Doctor.find({}).select(["-password", '-email']);
+  res.json({
+    success: true,
+    message: "Doctors fetched successfully",
+    doctors,
+  });
+});
+
 export{
-    changeDoctorAvailability
+    changeDoctorAvailability,
+    doctorList
 }

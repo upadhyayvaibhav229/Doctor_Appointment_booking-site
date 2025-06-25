@@ -37,7 +37,7 @@ const MyAppointments = () => {
             </div>
             <div className='flex-1 text-sm text-[#5E5E5E]'>
               <p className='font-semibold mt-1'>{item.name}</p>
-              <p>{item.speciality}</p>
+              <p>{item.specialization}</p>
               <p className='font-medium text-[#4B5563] mt-1'>Address:</p>
               <p>{item.address.line1}</p>
               <p>{item.address.line2}</p>

@@ -76,7 +76,7 @@ const TopDoctors = () => {
                 <p className="text-sm text-green-500">Available</p>
               </div>
               <p className="text-xl font-semibold">{item.name}</p>
-              <p className="text-sm font-semibold">{item.speciality}</p>
+              <p className="text-sm font-semibold">{item.specialization}</p>
             </div>
           </motion.div>
         ))}

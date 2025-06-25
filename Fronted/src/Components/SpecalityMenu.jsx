@@ -27,7 +27,7 @@ const SpecalityMenu = () => {
   return (
     <motion.div
       className="flex flex-col items-center justify-center py-16 text-gray-800 gap-4"
-      id="specality"
+      id="specialization"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
@@ -55,16 +55,16 @@ const SpecalityMenu = () => {
             variants={itemVariants}
           >
             <Link
-              to={`/doctors/${item.speciality}`}
+              to={`/doctors/${item.specialization}`}
               onClick={() => window.scrollTo(0, 0)}
               className="flex flex-col items-center gap-2"
             >
               <img
                 className="w-20 h-20 rounded-full"
                 src={item.image}
-                alt={item.speciality}
+                alt={item.specialization}
               />
-              <p className="text-sm font-semibold">{item.speciality}</p>
+              <p className="text-sm font-semibold">{item.specialization}</p>
             </Link>
           </motion.div>
         ))}

@@ -4,7 +4,7 @@ import { AppContext } from '../context/AppContext'
 import { motion } from 'framer-motion'
 
 const Doctors = () => {
-  const { speciality } = useParams()
+  const { specialization } = useParams()
   
   const navigate = useNavigate()
 
@@ -21,8 +21,9 @@ const Doctors = () => {
   ]
 
   const applyFilter = () => {
-    if (speciality) {
-      setFilterDocs(doctors.filter(doc => doc.speciality === speciality))
+    
+    if (specialization) {
+      setFilterDocs(doctors.filter(doc => doc.specialization === specialization))
     } else {
       setFilterDocs(doctors)
     }
@@ -30,7 +31,7 @@ const Doctors = () => {
 
   useEffect(() => {
     applyFilter()
-  }, [doctors, speciality]) 
+  }, [doctors, specialization]) 
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -69,7 +70,7 @@ const Doctors = () => {
               onClick={() => navigate(`/doctors/${item}`)}
               variants={itemVariants}
               className={`w-[20vw] border border-blue-300 text-md rounded px-2 py-2 cursor-pointer hover:bg-blue-100 ${
-                speciality === item ? "bg-blue-200 font-semibold" : ""
+                specialization === item ? "bg-blue-200 font-semibold" : ""
               }`}
             >
               {item}
@@ -88,7 +89,7 @@ const Doctors = () => {
                 key={index}
                 value={item}
                 className={`w-[20vw] border border-blue-300 text-md rounded px-2 py-2 cursor-pointer hover:bg-blue-100 ${
-                  speciality === item ? "bg-blue-200 font-semibold" : ""
+                  specialization === item ? "bg-blue-200 font-semibold" : ""
                 }`}
               >
                 {item}
@@ -116,7 +117,7 @@ const Doctors = () => {
                   <p className="text-sm text-green-500">Available</p>
                 </div>
                 <p className="text-xl font-semibold">{item.name}</p>
-                <p className="text-sm font-semibold">{item.speciality}</p>
+                <p className="text-sm font-semibold">{item.specialization}</p>
               </div>
             </motion.div>
           ))}

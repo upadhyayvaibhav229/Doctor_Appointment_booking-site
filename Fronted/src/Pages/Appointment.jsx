@@ -101,7 +101,7 @@ const Appointment = () => {
                 <img src={assets.verified_icon} alt="verified" />
               </div>
               <p className="text-[#4B5563]">
-                {docInfo.degree} - {docInfo.speciality}{" "}
+                {docInfo.degree} - {docInfo.specialization}{" "}
                 <span className="border px-2 rounded-full text-xs">
                   {docInfo.experience}
                 </span>
@@ -183,7 +183,7 @@ const Appointment = () => {
         viewport={{ once: true, amount: 0.2 }}
         variants={fadeInUp}
       >
-        <RelatedDoctors docId={id} speciality={docInfo?.speciality} />
+        <RelatedDoctors docId={id} specialization={docInfo?.speciality} />
       </motion.div>
     </>
   );
