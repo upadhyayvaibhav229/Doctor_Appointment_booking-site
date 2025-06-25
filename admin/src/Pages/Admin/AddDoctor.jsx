@@ -10,72 +10,73 @@ const AddDoctor = () => {
   const [password, setPassword] = React.useState("");
   const [experience, setExperience] = React.useState("1 Year");
   const [fees, setFees] = React.useState("");
-  const [specialization, setSpecialization] =React.useState("General Physician");
+  const [specialization, setSpecialization] =
+    React.useState("General Physician");
   const [degree, setDegree] = React.useState("");
   const [address1, setAddress1] = React.useState("");
   const [address2, setAddress2] = React.useState("");
   // const [education, setEducation] = React.useState("");
-  
+
   const [about, setAbout] = React.useState("");
 
   const { adminToken, backendUrl } = useAdminContext();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    if (!docImg) {
-      toast.error("Please upload a doctor image.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("docImg", docImg);
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("experience", experience);
-    formData.append("fees", fees);
-    formData.append("specialization", specialization);
-    formData.append(
-      "address",
-      JSON.stringify({ line1: address1, line2: address2 })
-    );
-    formData.append("degree", degree);
-    formData.append("about", about);
-
-    const { data } = await axios.post(
-      `${backendUrl}/api/admin/add-doctor`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${adminToken}`,
-        },
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!docImg) {
+        toast.error("Please upload a doctor image.");
+        return;
       }
-    );
 
-    if (data.success || data.message === "Doctor added successfully") {
-      toast.success("Doctor added successfully");
-      // Reset form
-      setDocImg(null);
-      setName("");
-      setEmail("");
-      setPassword("");
-      setExperience("1 Year");
-      setFees("");
-      setSpecialization("General Physician");
-      setAddress1("");
-      setAddress2("");
-      setDegree("");
-      setAbout("");
-    } else {
-      toast.error(data.message || "Something went wrong.");
+      const formData = new FormData();
+      formData.append("docImg", docImg);
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("experience", experience);
+      formData.append("fees", fees);
+      formData.append("specialization", specialization);
+      formData.append(
+        "address",
+        JSON.stringify({ line1: address1, line2: address2 })
+      );
+      formData.append("degree", degree);
+      formData.append("about", about);
+
+      const { data } = await axios.post(
+        `${backendUrl}/api/admin/add-doctor`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }
+      );
+
+      if (data.success || data.message === "Doctor added successfully") {
+        toast.success("Doctor added successfully");
+        // Reset form
+        setDocImg(null);
+        setName("");
+        setEmail("");
+        setPassword("");
+        setExperience("1 Year");
+        setFees("");
+        setSpecialization("General Physician");
+        setAddress1("");
+        setAddress2("");
+        setDegree("");
+        setAbout("");
+      } else {
+        toast.error(data.message || "Something went wrong.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong, please try again later.");
+      console.log(error?.response?.data || error);
     }
-  } catch (error) {
-    toast.error("Something went wrong, please try again later.");
-    console.log(error?.response?.data || error);
-  }
-};
+  };
 
   return (
     <div className="p-5 max-w-3xl mx-auto">
@@ -176,13 +177,17 @@ const handleSubmit = async (e) => {
                 value={specialization}
                 className="p-2 rounded border border-gray-300"
               >
-                <option value="cardiology">Cardiologist</option>
-                <option value="neurology">Neurologist</option>
-                <option value="orthopedics">Orthopedics</option>
-                <option value="pediatrics">Pediatricians</option>
-                <option value="dermatology">Dermatologist</option>
-                <option value="gynecology">Gynecologist</option>
-                <option value="general ">General Physician</option>
+                <option value="General physician">General physician</option>
+                <option value="Gynecologist">Gynecologist</option>
+                <option value="Dermatologist">Dermatologist</option>
+                <option value="Pediatricians">Pediatricians</option>
+                <option value="Neurologist">Neurologist</option>
+                <option value="Gastroenterologist">Gastroenterologist</option>
+                <option value="Urologist">Urologist</option>
+                <option value="Orthopedic surgeon">Orthopedic surgeon</option>
+                <option value="Cardiologist">Cardiologist</option>
+                <option value="Ophthalmologist">Ophthalmologist</option>
+                <option value="Psychiatrist">Psychiatrist</option>
               </select>
             </div>
 

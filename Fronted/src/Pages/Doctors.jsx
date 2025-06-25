@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { AppContext } from '../context/AppContext'
-import { motion } from 'framer-motion'
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import { motion } from "framer-motion";
 
 const Doctors = () => {
-  const { specialization } = useParams()
-  
-  const navigate = useNavigate()
+  const { specialization } = useParams();
 
-  const { doctors } = useContext(AppContext)
-  const [filterDocs, setFilterDocs] = useState([])
+  const navigate = useNavigate();
+
+  const { doctors } = useContext(AppContext);
+  const [filterDocs, setFilterDocs] = useState([]);
 
   const specialities = [
     "General physician",
@@ -18,20 +18,29 @@ const Doctors = () => {
     "Pediatricians",
     "Neurologist",
     "Gastroenterologist",
-  ]
+    "Urologist",
+    "Orthopedic surgeon",
+    "Cardiologist",
+    "Ophthalmologist",
+    "Psychiatrist",
+  ];
 
   const applyFilter = () => {
-    
     if (specialization) {
-      setFilterDocs(doctors.filter(doc => doc.specialization === specialization))
+      const formattedParam = specialization.trim().toLowerCase();
+      setFilterDocs(
+        doctors.filter(
+          (doc) => doc.specialization?.trim().toLowerCase() === formattedParam
+        )
+      );
     } else {
-      setFilterDocs(doctors)
+      setFilterDocs(doctors);
     }
-  } 
+  };
 
   useEffect(() => {
-    applyFilter()
-  }, [doctors, specialization]) 
+    applyFilter();
+  }, [doctors, specialization]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -45,12 +54,16 @@ const Doctors = () => {
         staggerChildren: 0.2,
       },
     },
-  }
+  };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } },
-  }
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.2, ease: "easeOut" },
+    },
+  };
 
   return (
     <motion.div
@@ -124,8 +137,7 @@ const Doctors = () => {
         </motion.div>
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default Doctors
-
+export default Doctors;

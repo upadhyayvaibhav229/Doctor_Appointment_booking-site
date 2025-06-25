@@ -18,6 +18,8 @@ const AppContextProvider = (props) => {
 
   // Function to fetch doctor data
   const getDoctorData = async () => {
+    setLoadingDoctors(true);
+
     try {
       const { data } = await axios.get(`${backendUrl}/api/doctor/list`, {
         headers: {
@@ -35,11 +37,13 @@ const AppContextProvider = (props) => {
       console.error("Axios error:", error.response?.data || error.message);
       toast.error(error.response?.data?.message || "Failed to fetch doctors");
     }
+
+    setLoadingDoctors(false);
   };
 
   // Auto-fetch doctors on mount if token is present
   useEffect(() => {
-   getDoctorData();
+    getDoctorData();
   }, [adminToken]);
 
   // Context value to be shared

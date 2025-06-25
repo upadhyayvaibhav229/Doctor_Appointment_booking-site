@@ -1,7 +1,7 @@
 import React from "react";
 import { assets } from "../../../Fronted/src/assets/assets/assets";
 import { useAdminContext } from "../Contexts/AdminContext";
-
+import { toast } from "react-toastify";
 const Navbar = () => {
     const {adminToken, setAdminToken} = useAdminContext();
 
@@ -9,6 +9,7 @@ const Navbar = () => {
         adminToken && setAdminToken(null);
         adminToken && localStorage.removeItem("adminToken");
         window.location.reload();
+        toast.success("Logout successful");
     }
   return (
     <div className="flex items-center justify-between text-sm py-4 p-2 border-b border-b-gray-400">
