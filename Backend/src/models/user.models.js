@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const User = new Schema({
+const UserSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -16,7 +16,7 @@ const User = new Schema({
     },
     address: {
         type: String,
-        required: true,
+        required: false,
     },
     phone: {
         type: String,
@@ -35,10 +35,19 @@ const User = new Schema({
     },
     gender: {
         type: String,
-        required: true,
+        required: false,
     },
     dob: {
         type: String,
         default: "Not Selected"
+    },
+    token: {
+        type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 }, { minimize: false });
+
+export const User = mongoose.model("User", UserSchema); 
