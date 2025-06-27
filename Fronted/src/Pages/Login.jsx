@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [state, setState] = useState("login"); // "login" or "signup"
@@ -8,8 +11,63 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { backendUrl, setToken } = useAppContext();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { name, email, password } = formData;
+
+    // 🔐 Frontend validation
+    if (!email || !password || (state === "signup" && !name)) {
+      return toast.error("All fields are required");
+    }
+
+    if (state === "signup" && password.length < 8) {
+      return toast.error("Password must be at least 8 characters");
+    }
+
+    try {
+      if (state === 'signup') {
+        const { data } = await axios.post(`${backendUrl}/api/user/register`, {
+          name,
+          email,
+          password
+        });
+
+        if (data.success) {
+          toast.success(data.message);
+          // navigate('/login');
+        } else {
+          toast.error(data.message || "Signup failed");
+        }
+      } else if (state === 'login') {
+        const { data } = await axios.post(`${backendUrl}/api/user/login`, {
+          email,
+          password
+        });
+
+        if (data.success) {
+          localStorage.setItem('token', data.token);
+          setToken(data.token);
+          toast.success(data.message);
+          navigate('/');
+        } else {
+          toast.error(data.message || "Login failed");
+        }
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+      console.error("Login/Signup error:", error);
+    }
+  };
+
+  useEffect(()=> {
+    if(localStorage.getItem('token')) {
+      navigate('/');
+    }
+  },[]);
 
   const handleInputChange = (e) => {
     setFormData(prev => ({
@@ -18,16 +76,16 @@ const Login = () => {
     }));
   };
 
-
-
   return (
-    <form  className='min-h-[80vh] flex items-center justify-center px-4'>
+    <form onSubmit={handleSubmit} className='min-h-[80vh] flex items-center justify-center px-4'>
       <div className="flex flex-col gap-4 border shadow-lg w-full max-w-md rounded-xl text-[#5E5E5E] p-8">
         <p className='text-2xl font-semibold '>
           {state === "login" ? "Login" : "Sign Up"}
         </p>
-        <p className=" text-gray-500">
-          {state === "login" ? "Please login to book appointments." : "Create an account to get started."}
+        <p className="text-gray-500">
+          {state === "login"
+            ? "Please login to book appointments."
+            : "Create an account to get started."}
         </p>
 
         {state === "signup" && (
@@ -40,6 +98,7 @@ const Login = () => {
               value={formData.name}
               onChange={handleInputChange}
               placeholder="John Doe"
+              required
             />
           </div>
         )}
@@ -53,6 +112,7 @@ const Login = () => {
             value={formData.email}
             onChange={handleInputChange}
             placeholder="john@example.com"
+            required
           />
         </div>
 
@@ -65,10 +125,9 @@ const Login = () => {
             value={formData.password}
             onChange={handleInputChange}
             placeholder="********"
+            required
           />
         </div>
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <button type="submit" className='bg-primary text-white px-4 py-2 rounded-md w-full'>
           {state === "login" ? "Login" : "Sign Up"}

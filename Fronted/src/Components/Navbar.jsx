@@ -5,11 +5,19 @@ import dropdown_icon from "../assets/assets/dropdown_icon.svg";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { assets } from "../assets/assets/assets";
+import { useAppContext } from "../context/AppContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(true);
+  // const [token, setToken] = useState(true);
+  const {token, setToken} = useAppContext()
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(false);
+    navigate("/login");
+  };
 
   return (
     <motion.div
@@ -68,7 +76,7 @@ const Navbar = () => {
                     My Appointments
                   </p>
                   <p
-                    onClick={() => setToken(false)}
+                    onClick={() => handleLogout()}
                     className="hover:text-black cursor-pointer"
                   >
                     Logout

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext as useReactContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -11,22 +11,17 @@ const AppContextProvider = (props) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const [doctors, setDoctors] = useState([]);
-  const [adminToken, setAdminToken] = useState(
-    localStorage.getItem("adminToken") || ""
-  );
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loadingDoctors, setLoadingDoctors] = useState(false);
 
-  // Function to fetch doctor data
   const getDoctorData = async () => {
     setLoadingDoctors(true);
-
     try {
       const { data } = await axios.get(`${backendUrl}/api/doctor/list`, {
         headers: {
-          Authorization: `Bearer ${adminToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-
       if (data.success) {
         setDoctors(data.doctors);
         toast.success(data.message);
@@ -34,31 +29,45 @@ const AppContextProvider = (props) => {
         toast.error(data.message);
       }
     } catch (error) {
-      console.error("Axios error:", error.response?.data || error.message);
-      toast.error(error.response?.data?.message || "Failed to fetch doctors");
+      if (error.response?.status === 401) {
+        setToken("");
+        localStorage.removeItem("token");
+        toast.error("Session expired. Please login again.");
+      } else {
+        console.error("Axios error:", error.response?.data || error.message);
+        toast.error(error.response?.data?.message || "Failed to fetch doctors");
+      }
     }
-
     setLoadingDoctors(false);
   };
 
-  // Auto-fetch doctors on mount if token is present
   useEffect(() => {
-    getDoctorData();
-  }, [adminToken]);
+    if (token) {
+      getDoctorData();
+    }
+  }, [token]);
 
-  // Context value to be shared
+  useEffect(() => {
+    localStorage.setItem("token", token);
+  }, [token]);
+
   const value = {
     doctors,
     currencySymbol,
     getDoctorData,
     loadingDoctors,
-    adminToken,
-    setAdminToken, // in case you need to update token from other components
+    token,
+    setToken,
+    backendUrl
   };
 
   return (
-    <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
+    <AppContext.Provider value={value}>
+      {props.children}
+    </AppContext.Provider>
   );
 };
+
+export const useAppContext = () => useReactContext(AppContext);
 
 export default AppContextProvider;
