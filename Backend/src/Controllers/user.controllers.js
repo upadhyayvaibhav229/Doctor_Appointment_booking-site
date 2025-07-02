@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asynchandler.js";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import {v2 as cloudinary} from "cloudinary";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -140,13 +141,74 @@ const logoutUser = asyncHandler(async (req, res) => {
     })
 })
 
-const getProfileDetails = () => {
-  // const {}
-}
+const getProfileDetails = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+  const userData = await User.findById(userId).select("-password");
+
+  if (!userData) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User profile fetched successfully",
+    user: userData,
+  });
+});
+
+// update profile
+const updateProfile = asyncHandler(async (req, res) => {
+  const {userId, name, phone, address, dob, gender} = req.body;
+  const imageFile = req.file;
+  if (!name || !phone || !address || !dob || !gender) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
+    });
+    
+  }
+  const userData = await User.findByIdAndUpdate(userId, {
+    name,
+    phone,
+    address: JSON.parse(address),
+    dob,
+    gender
+  });
+  
+  if (!userData) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+  if (imageFile) {
+    const imageupload = await cloudinary.uploader.upload(imageFile.path, {resource_type: "image"});
+    const imageUrl = imageupload.secure_url;
+
+    await User.findByIdAndUpdate(userId, {
+      image: imageUrl,
+    });
+
+
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User profile updated successfully",
+    user: userData,
+  });
+
+
+})
 
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    getProfileDetails,
+    updateProfile
 
 }
