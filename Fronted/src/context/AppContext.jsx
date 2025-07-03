@@ -13,7 +13,7 @@ const AppContextProvider = (props) => {
   const [doctors, setDoctors] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loadingDoctors, setLoadingDoctors] = useState(false);
-
+  const [userData, setUserData ] = useState();
   const getDoctorData = async () => {
     setLoadingDoctors(true);
     try {
@@ -41,6 +41,28 @@ const AppContextProvider = (props) => {
     setLoadingDoctors(false);
   };
 
+  const loadUserProfileData = async () => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/api/user/get-profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
+      if (data.success) {
+        setUserData(data.user);
+        toast.success(data.message);
+      }else{
+        toast.error(data.message);
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        toast.error("Session expired. Please login again.");
+        console.log(error.response?.data || error.message);
+        
+      }
+    }
+  }
+
   useEffect(() => {
     if (token) {
       getDoctorData();
@@ -58,7 +80,10 @@ const AppContextProvider = (props) => {
     loadingDoctors,
     token,
     setToken,
-    backendUrl
+    backendUrl,
+    userData,
+    setUserData,
+    loadUserProfileData
   };
 
   return (

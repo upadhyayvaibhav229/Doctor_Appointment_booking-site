@@ -1,20 +1,9 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets/assets";
+import { useAppContext } from "../context/AppContext";
 
 const MyProfile = () => {
-  const [userData, setUserData] = useState({
-    name: "Edward",
-    email: "jWf3o@example.com",
-    phone: "1234567890",
-    address: {
-      line1: "",
-      line2: "",
-    },
-    dob: "1990-01-01",
-    profilePicture: assets.profile_pic,
-    gender: "Male",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  });
+  const { userData, setUserData } = useAppContext();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -22,7 +11,7 @@ const MyProfile = () => {
     <div className="max-w-2xl mt-10 p-6 bg-white rounded-2xl shadow-lg space-y-6">
       <div className="flex flex-col items-center space-y-4">
         <img
-          src={userData.profilePicture}
+          src={userData.image || "/default-profile.png"}
           alt="Profile"
           className="w-32 h-32 rounded-full object-cover shadow"
         />
@@ -30,9 +19,7 @@ const MyProfile = () => {
           <input
             type="text"
             value={userData.name}
-            onChange={(e) =>
-              setUserData({ ...userData, name: e.target.value })
-            }
+            onChange={(e) => setUserData({ ...userData, name: e.target.value })}
             className="text-center text-2xl font-semibold text-gray-800 border border-gray-300 rounded-md px-4 py-2 focus:outline-none"
           />
         ) : (

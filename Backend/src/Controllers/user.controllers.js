@@ -142,7 +142,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 })
 
 const getProfileDetails = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const userId = req.user.id; // comes from auth middleware
+
   const userData = await User.findById(userId).select("-password");
 
   if (!userData) {
@@ -159,50 +160,55 @@ const getProfileDetails = asyncHandler(async (req, res) => {
   });
 });
 
+
 // update profile
 const updateProfile = asyncHandler(async (req, res) => {
-  const {userId, name, phone, address, dob, gender} = req.body;
+  const { userId, name, phone, address, dob, gender } = req.body;
   const imageFile = req.file;
-  if (!name || !phone || !address || !dob || !gender) {
+
+  if (!name || !phone || !dob || !gender) {
     return res.status(400).json({
       success: false,
       message: "All fields are required",
     });
-    
   }
-  const userData = await User.findByIdAndUpdate(userId, {
+
+  // Start with initial update object
+  const updateData = {
     name,
     phone,
     address: JSON.parse(address),
     dob,
-    gender
-  });
-  
-  if (!userData) {
+    gender,
+  };
+
+  // If image is present, upload it and add to updateData
+  if (imageFile) {
+    const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+      resource_type: "image",
+    });
+    updateData.image = imageUpload.secure_url;
+  }
+
+  // Update all at once
+  const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+    new: true,
+    runValidators: true,
+  }).select("-password");
+
+  if (!updatedUser) {
     return res.status(404).json({
       success: false,
       message: "User not found",
     });
   }
-  if (imageFile) {
-    const imageupload = await cloudinary.uploader.upload(imageFile.path, {resource_type: "image"});
-    const imageUrl = imageupload.secure_url;
-
-    await User.findByIdAndUpdate(userId, {
-      image: imageUrl,
-    });
-
-
-  }
 
   res.status(200).json({
     success: true,
     message: "User profile updated successfully",
-    user: userData,
+    user: updatedUser,
   });
-
-
-})
+});
 
 export {
     registerUser,
