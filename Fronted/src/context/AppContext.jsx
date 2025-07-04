@@ -1,4 +1,9 @@
-import { createContext, useState, useEffect, useContext as useReactContext } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext as useReactContext,
+} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -13,14 +18,16 @@ const AppContextProvider = (props) => {
   const [doctors, setDoctors] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loadingDoctors, setLoadingDoctors] = useState(false);
-  const [userData, setUserData ] = useState(false);
+  const [userData, setUserData] = useState(false);
   const getDoctorData = async () => {
     setLoadingDoctors(true);
     try {
       const { data } = await axios.get(`${backendUrl}/api/doctor/list`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: token
+          ? {
+              Authorization: `Bearer ${token}`,
+            }
+          : {},
       });
       if (data.success) {
         setDoctors(data.doctors);
@@ -44,41 +51,41 @@ const AppContextProvider = (props) => {
   const loadUserProfileData = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/user/get-profile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
+        headers: token
+          ? {
+              Authorization: `Bearer ${token}`,
+            }
+          : {},
+      });
       console.log(data);
-      
+
       if (data.success) {
         setUserData(data.user);
         toast.success(data.message);
-      }else{
+      } else {
         toast.error(data.message);
       }
     } catch (error) {
       if (error.response?.status === 401) {
         toast.error("Session expired. Please login again.");
         console.log(error.response?.data || error.message);
-        
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (token) {
       getDoctorData();
-      
     }
   }, [token]);
 
-  useEffect(()=> {
+  useEffect(() => {
     if (token) {
       loadUserProfileData();
-    }else{
+    } else {
       setUserData(false);
     }
-  }, [token])
+  }, [token]);
 
   useEffect(() => {
     localStorage.setItem("token", token);
@@ -94,13 +101,11 @@ const AppContextProvider = (props) => {
     backendUrl,
     userData,
     setUserData,
-    loadUserProfileData
+    loadUserProfileData,
   };
 
   return (
-    <AppContext.Provider value={value}>
-      {props.children}
-    </AppContext.Provider>
+    <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
   );
 };
 

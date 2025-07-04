@@ -13,7 +13,7 @@ export const authUser = asyncHandler(async (req, res, next) => {
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-  req.body.userId = decoded.id;
-  
+  req.user = { id: decoded.id };
+
   next();
 });

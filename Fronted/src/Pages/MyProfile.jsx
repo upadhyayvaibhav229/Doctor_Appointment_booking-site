@@ -1,33 +1,55 @@
 import React, { useEffect, useState } from "react";
-import { assets } from "../assets/assets/assets";
 import { useAppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
+import { assets} from '../assets/assets/assets.js'
 
 const MyProfile = () => {
-  const { userData, setUserData, loadUserProfileData  } = useAppContext();
+  const { userData, setUserData, loadUserProfileData, token, backendUrl } =
+    useAppContext();
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    toast.success("Editing mode enabled");
+  };
+
+  const updateUserProfile = async () => {};
 
   useEffect(() => {
     loadUserProfileData();
   }, []);
 
-  const [isEditing, setIsEditing] = useState(false);
-
-  return userData && (
+  return (
     <div className="max-w-2xl mt-10 p-6 bg-white rounded-2xl shadow-lg space-y-6">
       <div className="flex flex-col items-center space-y-4">
-        <img
-          src={userData.image}
-          alt="Profile"
-          className="w-32 h-32 rounded-full object-cover shadow"
-        />
+        {isEditing ? (
+          <label htmlFor="fileInput">
+          <div>
+
+            <img src={image ? URL.createObjectURL(image) : userData?.image} alt="" />
+            <img src={image ? '' : assets.upload_icon} alt="" />
+          </div>
+
+          <input onChange={(e) => setUserData(e.target.files[0])} type="file" id="fileInput" hidden />
+          </label>
+        ) : (
+          <img
+            src={userData?.image || ""}
+            alt="Profile"
+            className="w-32 h-32 rounded-full object-cover shadow"
+          />
+        )}
+
         {isEditing ? (
           <input
             type="text"
-            value={userData.name}
+            value={userData?.name || ""}
             onChange={(e) => setUserData({ ...userData, name: e.target.value })}
             className="text-center text-2xl font-semibold text-gray-800 border border-gray-300 rounded-md px-4 py-2 focus:outline-none"
           />
         ) : (
-          <h1 className="text-2xl font-bold text-gray-800">{userData.name}</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{userData?.name}</h1>
         )}
       </div>
 
@@ -37,20 +59,20 @@ const MyProfile = () => {
         </h2>
         <div className="grid grid-cols-[1fr_2.5fr] gap-4 text-sm">
           <p className="font-medium">Email:</p>
-          <p className="text-blue-600">{userData.email}</p>
+          <p className="text-blue-600">{userData?.email || ""}</p>
 
           <p className="font-medium">Phone:</p>
           {isEditing ? (
             <input
               type="text"
-              value={userData.phone}
+              value={userData?.phone || ""}
               onChange={(e) =>
                 setUserData({ ...userData, phone: e.target.value })
               }
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
             />
           ) : (
-            <p>{userData.phone}</p>
+            <p>{userData?.phone}</p>
           )}
 
           <p className="font-medium">Address:</p>
@@ -58,7 +80,7 @@ const MyProfile = () => {
             <div className="space-y-2">
               <input
                 type="text"
-                value={userData.address.line1}
+                value={userData?.address?.line1 || ""}
                 onChange={(e) =>
                   setUserData({
                     ...userData,
@@ -70,7 +92,7 @@ const MyProfile = () => {
               />
               <input
                 type="text"
-                value={userData.address.line2}
+                value={userData?.address?.line2 || ""}
                 onChange={(e) =>
                   setUserData({
                     ...userData,
@@ -83,8 +105,8 @@ const MyProfile = () => {
             </div>
           ) : (
             <div>
-              <p>{userData.address.line1}</p>
-              <p>{userData.address.line2}</p>
+              <p>{userData?.address?.line1}</p>
+              <p>{userData?.address?.line2}</p>
             </div>
           )}
         </div>
@@ -99,37 +121,38 @@ const MyProfile = () => {
           {isEditing ? (
             <input
               type="date"
-              value={userData.dob}
+              value={userData?.dob || ""}
               onChange={(e) =>
                 setUserData({ ...userData, dob: e.target.value })
               }
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
             />
           ) : (
-            <p>{userData.dob}</p>
+            <p>{userData?.dob}</p>
           )}
 
           <p className="font-medium">Gender:</p>
           {isEditing ? (
             <select
-              value={userData.gender}
+              value={userData?.gender || ""}
               onChange={(e) =>
                 setUserData({ ...userData, gender: e.target.value })
               }
               className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none"
             >
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
             </select>
           ) : (
-            <p>{userData.gender}</p>
+            <p>{userData?.gender}</p>
           )}
 
           <p className="font-medium">Bio:</p>
           {isEditing ? (
             <textarea
-              value={userData.bio}
+              value={userData?.bio || ""}
               onChange={(e) =>
                 setUserData({ ...userData, bio: e.target.value })
               }
@@ -137,7 +160,7 @@ const MyProfile = () => {
               rows={3}
             />
           ) : (
-            <p className="text-gray-600">{userData.bio}</p>
+            <p className="text-gray-600">{userData?.bio}</p>
           )}
         </div>
       </div>
