@@ -13,7 +13,7 @@ const AppContextProvider = (props) => {
   const [doctors, setDoctors] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loadingDoctors, setLoadingDoctors] = useState(false);
-  const [userData, setUserData ] = useState();
+  const [userData, setUserData ] = useState(false);
   const getDoctorData = async () => {
     setLoadingDoctors(true);
     try {
@@ -48,6 +48,8 @@ const AppContextProvider = (props) => {
           Authorization: `Bearer ${token}`,
         }
       })
+      console.log(data);
+      
       if (data.success) {
         setUserData(data.user);
         toast.success(data.message);
@@ -66,8 +68,17 @@ const AppContextProvider = (props) => {
   useEffect(() => {
     if (token) {
       getDoctorData();
+      
     }
   }, [token]);
+
+  useEffect(()=> {
+    if (token) {
+      loadUserProfileData();
+    }else{
+      setUserData(false);
+    }
+  }, [token])
 
   useEffect(() => {
     localStorage.setItem("token", token);

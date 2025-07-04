@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { assets } from "../assets/assets/assets";
 import { useAppContext } from "../context/AppContext";
 
 const MyProfile = () => {
-  const { userData, setUserData } = useAppContext();
+  const { userData, setUserData, loadUserProfileData  } = useAppContext();
+
+  useEffect(() => {
+    loadUserProfileData();
+  }, []);
 
   const [isEditing, setIsEditing] = useState(false);
 
-  return (
+  return userData && (
     <div className="max-w-2xl mt-10 p-6 bg-white rounded-2xl shadow-lg space-y-6">
       <div className="flex flex-col items-center space-y-4">
         <img
-          src={userData.image || "/default-profile.png"}
+          src={userData.image}
           alt="Profile"
           className="w-32 h-32 rounded-full object-cover shadow"
         />
