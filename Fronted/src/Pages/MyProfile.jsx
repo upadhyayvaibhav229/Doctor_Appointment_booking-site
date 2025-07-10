@@ -1,20 +1,80 @@
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
-import { assets} from '../assets/assets/assets.js'
+import { assets } from "../assets/assets/assets.js";
+import axios from "axios";
 
 const MyProfile = () => {
   const { userData, setUserData, loadUserProfileData, token, backendUrl } =
     useAppContext();
+  const [image, setImage] = useState(null);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const updateProfile = async () => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("name", userData.name);
+      // formData.append("email", userData.email);
+      formData.append("phone", userData.phone);
+      formData.append("address", JSON.stringify(userData.address || {}));
+      formData.append("dob", userData.dob); // ✅ Added
+      formData.append("gender", userData.gender); // ✅ Added
+      formData.append("bio", userData.bio || ""); // ✅ Added
+
+      if (image) {
+        formData.append("image", image);
+      }
+
+      // validation
+      const requiredFields = ["name", "phone", "dob", "gender", "address"];
+      for (const field of requiredFields) {
+        if (!userData[field]) {
+          toast.error(
+            `${field.charAt(0).toUpperCase() + field.slice(1)} is required`
+          );
+          return;
+        }
+      }
+      if (userData.address && typeof userData.address !== "object") {
+        toast.error("Address must be an object");
+        return;
+      }
+
+      const { data } = await axios.post(
+        `${backendUrl}/api/user/update-profile`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // ⏳ Simulate network delay
+
+      if (data.success) {
+        setUserData(data.user); // 🔁 refresh local data
+        toast.success(data.message);
+        setIsEditing(false); // ✅ Exit edit mode
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
+    } finally {
+      setLoading(false); // ✅ Stop loading state
+    }
+  };
 
   const handleEdit = () => {
     setIsEditing(true);
     toast.success("Editing mode enabled");
   };
-
-  const updateUserProfile = async () => {};
 
   useEffect(() => {
     loadUserProfileData();
@@ -25,17 +85,33 @@ const MyProfile = () => {
       <div className="flex flex-col items-center space-y-4">
         {isEditing ? (
           <label htmlFor="fileInput">
-          <div>
+            <div className="inline-block relative cursor-pointer">
+              <img
+                className="w-36 h- rounded-full opacity-75 hover:opacity-100 transition-opacity duration-300"
+                src={
+                  isEditing && image instanceof File
+                    ? URL.createObjectURL(image)
+                    : userData?.image
+                }
+                alt=""
+              />
+              <img
+                className="w-10 absolute bottom-12 right-12"
+                src={image ? "" : assets.upload_icon}
+                alt="Upload Icon"
+              />
+            </div>
 
-            <img src={image ? URL.createObjectURL(image) : userData?.image} alt="" />
-            <img src={image ? '' : assets.upload_icon} alt="" />
-          </div>
-
-          <input onChange={(e) => setUserData(e.target.files[0])} type="file" id="fileInput" hidden />
+            <input
+              onChange={(e) => setImage(e.target.files[0])}
+              type="file"
+              id="fileInput"
+              hidden
+            />
           </label>
         ) : (
           <img
-            src={userData?.image || ""}
+            src={userData?.image}
             alt="Profile"
             className="w-32 h-32 rounded-full object-cover shadow"
           />
@@ -166,12 +242,50 @@ const MyProfile = () => {
       </div>
 
       <div className="mt-5">
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className="bg-blue-600 text-white font-medium px-6 py-2 rounded-md hover:bg-blue-700 transition-all"
-        >
-          {isEditing ? "Save Profile" : "Edit Profile"}
-        </button>
+        {isEditing ? (
+          <button
+            onClick={updateProfile}
+            disabled={loading}
+            className={`bg-blue-600 text-white font-medium px-6 py-2 rounded-md transition-all mr-2 ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+            }`}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
+                Saving...
+              </span>
+            ) : (
+              "Save Profile"
+            )}
+          </button>
+        ) : (
+          <button
+            onClick={handleEdit}
+            className="bg-blue-600 text-white font-medium px-6 py-2 rounded-md hover:bg-blue-700 transition-all"
+          >
+            Edit Profile
+          </button>
+        )}
       </div>
     </div>
   );

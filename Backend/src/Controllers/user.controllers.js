@@ -163,7 +163,8 @@ const getProfileDetails = asyncHandler(async (req, res) => {
 
 // update profile
 const updateProfile = asyncHandler(async (req, res) => {
-  const { userId, name, phone, address, dob, gender } = req.body;
+  const userId = req.user.id;
+  const { name, phone, address, dob, gender } = req.body;
   const imageFile = req.file;
 
   if (!name || !phone || !dob || !gender) {
@@ -173,16 +174,25 @@ const updateProfile = asyncHandler(async (req, res) => {
     });
   }
 
-  // Start with initial update object
+  let parsedAddress = {};
+  try {
+    parsedAddress = address ? JSON.parse(address) : {};
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid address format",
+    });
+  }
+
   const updateData = {
     name,
     phone,
-    address: JSON.parse(address),
     dob,
     gender,
+    address: parsedAddress,
+    bio: req.body.bio || "", // Optional field, default to empty string
   };
 
-  // If image is present, upload it and add to updateData
   if (imageFile) {
     const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
       resource_type: "image",
@@ -190,7 +200,6 @@ const updateProfile = asyncHandler(async (req, res) => {
     updateData.image = imageUpload.secure_url;
   }
 
-  // Update all at once
   const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
     new: true,
     runValidators: true,

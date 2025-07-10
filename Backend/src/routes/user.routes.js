@@ -12,5 +12,6 @@ UserRoute.post('/register', registerUser);
 UserRoute.post('/login', loginUser);
 UserRoute.post('/logout', logoutUser);
 UserRoute.get('/get-profile', authUser, getProfileDetails);
-UserRoute.post('/update-profile', upload.single('userImg'),authUser, updateProfile);
-export default UserRoute
+UserRoute.post('/update-profile', upload.single('image'),authUser, updateProfile);
+
+export default UserRoute;

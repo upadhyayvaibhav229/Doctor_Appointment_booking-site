@@ -63,6 +63,7 @@ const AppContextProvider = (props) => {
         setUserData(data.user);
         toast.success(data.message);
       } else {
+        console.log("Error fetching user profile:", data.message);
         toast.error(data.message);
       }
     } catch (error) {
