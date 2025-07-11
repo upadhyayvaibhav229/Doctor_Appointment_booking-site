@@ -3,7 +3,10 @@ import { asyncHandler } from "../utils/asynchandler.js";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {v2 as cloudinary} from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
+import { Doctor } from "../models/doctors.model.js";
+import { Appointment } from "../models/appointment.model.js";
+// import { appointment } from "../models/appointment.model.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -44,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password: hashPassword,
-  }
+  };
 
   const user = await User.create(userData);
   if (!user) {
@@ -52,9 +55,7 @@ const registerUser = asyncHandler(async (req, res) => {
       success: false,
       message: "User registration failed",
     });
-    
   }
-
 
   const token = jwt.sign({ id: userData._id }, process.env.JWT_SECRET_KEY, {
     expiresIn: "1h",
@@ -71,10 +72,9 @@ const registerUser = asyncHandler(async (req, res) => {
     success: true,
     message: "User registered successfully",
     userData,
-    token
+    token,
   });
 });
-
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -113,7 +113,7 @@ const loginUser = asyncHandler(async (req, res) => {
     maxAge: 1000 * 60 * 60, // 1 hour
   });
 
-   // 🛡️ Only return necessary fields
+  // 🛡️ Only return necessary fields
   const { _id, name, email: userEmail } = user;
 
   res.status(200).json({
@@ -124,22 +124,22 @@ const loginUser = asyncHandler(async (req, res) => {
       name,
       email: userEmail,
     },
-    token
+    token,
   });
-})
+});
 
 const logoutUser = asyncHandler(async (req, res) => {
-   res.clearCookie("token", {
+  res.clearCookie("token", {
     httpOnly: true,
     secure: true,
     sameSite: "none",
-   })
+  });
 
-    res.status(200).json({
-        success: true,
-        message: "User logged out successfully"
-    })
-})
+  res.status(200).json({
+    success: true,
+    message: "User logged out successfully",
+  });
+});
 
 const getProfileDetails = asyncHandler(async (req, res) => {
   const userId = req.user.id; // comes from auth middleware
@@ -159,7 +159,6 @@ const getProfileDetails = asyncHandler(async (req, res) => {
     user: userData,
   });
 });
-
 
 // update profile
 const updateProfile = asyncHandler(async (req, res) => {
@@ -219,11 +218,64 @@ const updateProfile = asyncHandler(async (req, res) => {
   });
 });
 
-export {
-    registerUser,
-    loginUser,
-    logoutUser,
-    getProfileDetails,
-    updateProfile
+// API to book appointment
 
-}
+const bookAppointment = asyncHandler(async (req, res) => {
+  const { userId, docId, slotDate, slotTime } = req.body;
+
+  const docData = await Doctor.findById(docId).select("-password");
+
+  if (!docData) {
+    return res.status(404).json({
+      success: false,
+      message: "Doctor not found",
+    });
+  }
+
+  let slots_booked = docData.slot_Booked;
+
+  // checking for slots
+  if (slots_booked[slotDate].includes(slotTime)) {
+    return res.status(400).json({
+      success: false,
+      message: "Slot already booked",
+    });
+  } else {
+    slots_booked[slotDate] = [];
+    slots_booked[slotDate].push(slotTime);
+  }
+  const userData = await User.findById(userId).select("-password");
+
+  delete docData.slot_Booked;
+  const appointmentData = {
+    userId,
+    docId,
+    slotDate,
+    slotTime,
+    userData,
+    docData,
+    date: Date.now(),
+    amount: docData.fees,
+  };
+
+  const appointment = await Appointment.create(appointmentData);
+
+  await Doctor.findByIdAndUpdate(docId, {
+    slot_Booked: slots_booked,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Appointment booked successfully",
+    appointment,
+  })
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getProfileDetails,
+  updateProfile,
+  bookAppointment,
+};

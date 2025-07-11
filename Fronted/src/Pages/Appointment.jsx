@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { assets } from "../assets/assets/assets";
 import RelatedDoctors from "../Components/RelatedDoctors";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 // Animation Variants
 const fadeInUp = {
@@ -13,7 +14,8 @@ const fadeInUp = {
 
 const Appointment = () => {
   const { id } = useParams();
-  const { doctors } = useContext(AppContext);
+  const { doctors, currencySymbol, backendUrl, token, getDoctorData } = useContext(AppContext);
+
 
   const [docInfo, setDocInfo] = useState(null);
   const [docslots, setDocSlots] = useState([]);
@@ -22,6 +24,18 @@ const Appointment = () => {
 
   const navigate = useNavigate();
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+  const handleBookAppointment = async () => {
+    if (!token) {
+      toast.warning("Please login to book an appointment.");
+      return navigate('/login');
+    }
+    try {
+      const data = docslots[slotIndex][0].datetime;
+    } catch (error) {
+      
+    }
+  }
 
   useEffect(() => {
     const fetchData = doctors.find((item) => item._id === id);
@@ -169,7 +183,7 @@ const Appointment = () => {
         </div>
 
         <button
-          onClick={() => navigate(`/my-appointments`)}
+          onClick={handleBookAppointment}
           className="bg-primary cursor-pointer w-fit px-5 mt-4 py-2 rounded-full text-white font-bold"
         >
           Book an Appointment
